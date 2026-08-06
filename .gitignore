@@ -1,0 +1,24 @@
+# --- .NET (backend, включая тестовый проект) ---
+bin/
+obj/
+*.db
+*.db-shm
+*.db-wal
+appsettings.Local.json
+appsettings.Development.json
+
+# --- Node / frontend ---
+node_modules/
+dist/
+frontend/.env
+*.local
+
+# --- IDE / редакторы ---
+.vs/
+.vscode/
+.idea/
+*.user
+
+# --- ОС ---
+.DS_Store
+Thumbs.db

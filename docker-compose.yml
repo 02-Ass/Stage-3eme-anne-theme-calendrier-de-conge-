@@ -1,0 +1,103 @@
+# Поднимает ВЕСЬ стек одной командой: базу данных приложения
+# (PostgreSQL), backend, frontend и Keycloak (+ его собственная БД).
+#
+# Запуск:  docker compose up -d --build
+# Приложение:                  http://localhost:5173
+# Консоль администратора Keycloak: http://localhost:8080  (admin / admin)
+#
+# ВАЖНО: backend и frontend в этом файле запускаются с ОТКЛЮЧЁННОЙ
+# авторизацией (Auth:Disabled / VITE_AUTH_DISABLED) — это гарантированно
+# рабочий вариант "поднять всё и сразу посмотреть", без танцев с сетевой
+# видимостью Keycloak между контейнером backend'а и браузером (это два
+# разных сетевых пути к Keycloak — из контейнера и из браузера — и их
+# синхронизация тянет на отдельную большую задачу сама по себе).
+#
+# Для проверки НАСТОЯЩЕЙ авторизации через Keycloak — используйте
+# локальный workflow (dotnet run + npm run dev), описанный в README:
+# там backend и frontend работают на хосте и одинаково видят Keycloak
+# через localhost:8080.
+#
+# После первого запуска Keycloak нужно один раз настроить realm и
+# клиентов — пошагово это описано в README.md, раздел "Настройка Keycloak".
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vacationplanner
+      POSTGRES_USER: vacationplanner
+      POSTGRES_PASSWORD: vacationplanner
+    ports:
+      # Порт пробрасывается на хост, т.к. backend при локальной разработке
+      # (dotnet run, не в контейнере) подключается через localhost:5432.
+      - "5432:5432"
+    volumes:
+      - app-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacationplanner -d vacationplanner"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  keycloak-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak
+    volumes:
+      - keycloak-db-data:/var/lib/postgresql/data
+
+  keycloak:
+    # "latest" — чтобы не зависеть от конкретной версии; для стабильного
+    # стенда лучше зафиксировать конкретный тег, например :26.0
+    image: quay.io/keycloak/keycloak:latest
+    restart: unless-stopped
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-db:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - keycloak-db
+
+  backend:
+    build:
+      context: ./backend/VacationPlanner.Api
+    restart: unless-stopped
+    environment:
+      # ConnectionStrings__Default — двойное подчёркивание вместо ":" —
+      # так ASP.NET Core читает вложенные ключи конфигурации из
+      # переменных окружения.
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=vacationplanner;Username=vacationplanner;Password=vacationplanner"
+      Auth__Disabled: "true"
+      Cors__AllowedOrigin: "http://localhost:5173"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    ports:
+      - "5000:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: "http://localhost:5000/api"
+        VITE_AUTH_DISABLED: "true"
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  app-db-data:
+  keycloak-db-data:

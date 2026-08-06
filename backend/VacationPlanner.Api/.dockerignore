@@ -1,0 +1,8 @@
+bin/
+obj/
+*.db
+# Не тащим в образ файл для локальной разработки (там Auth:Disabled=true) —
+# в контейнере ASPNETCORE_ENVIRONMENT по умолчанию Production, он всё
+# равно не читается, а если появится Development-образ — лучше не иметь
+# риска случайно унести отключённую авторизацию в билд.
+appsettings.Development.json
