@@ -11,7 +11,7 @@ namespace VacationPlanner.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[AllowAnonymous] // ИСПРАВИЛИ СЮДА: Открыли доступ для всех без проверки токенов
 public class VacationsController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -22,6 +22,7 @@ public class VacationsController : ControllerBase
         _db = db;
         _currentUser = currentUser;
     }
+
 
     /// <summary>
     /// Возвращает отпуска. Видно всем авторизованным пользователям
@@ -191,6 +192,7 @@ public class VacationsController : ControllerBase
 
         return NoContent();
     }
+
 
     /// <summary>
     /// Проверяет, пересекается ли [start; end] с уже существующими

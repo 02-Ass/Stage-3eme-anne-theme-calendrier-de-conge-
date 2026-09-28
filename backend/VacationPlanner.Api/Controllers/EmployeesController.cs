@@ -9,7 +9,7 @@ namespace VacationPlanner.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[AllowAnonymous] // ДОБАВИЛИ СЮДА: Отключает любую авторизацию для всего контроллера сотрудников
 public class EmployeesController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -18,6 +18,7 @@ public class EmployeesController : ControllerBase
     {
         _db = db;
     }
+
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
