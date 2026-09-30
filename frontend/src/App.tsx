@@ -161,7 +161,7 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="app-header">
-        <h1>Планирование отпусков</h1>
+        <h1>Vacation planning</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <UpcomingNotifications employees={employees} />
           <Button
@@ -203,10 +203,10 @@ export default function App() {
 
           <section className="panel calendar-panel">
             <div className="panel-header">
-              <h2>Календарь — {CURRENT_YEAR}</h2>
+              <h2>Calendar — {CURRENT_YEAR}</h2>
               {isManager && (
                 <Button size="small" icon={<DownloadOutlined />} onClick={() => void handleExport()}>
-                  Экспорт в CSV
+                  Export in CSV
                 </Button>
               )}
             </div>

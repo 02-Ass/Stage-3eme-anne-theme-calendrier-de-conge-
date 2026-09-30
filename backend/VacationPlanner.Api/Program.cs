@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")
-                       ?? "Host=localhost;Port=5432;Database=vacationplanner;Username=postgres;Password=12345"));
+                       ?? "Host=localhost;Port=5432;Database=VacationPlanner;Username=postgres;Password=12345"));
 
 builder.Services.AddHttpContextAccessor();
 // builder.Services.AddScoped<ICurrentUserContext, CurrentUserContext>(); // Старую строку комментируем
