@@ -38,7 +38,7 @@ export default function EmployeeSidebar({
   return (
     <>
       <div className="panel-header">
-        <h2>Список сотрудников</h2>
+        <h2>List of employees</h2>
         {isManager && (
           <Space size={4}>
             <Tooltip title="Добавить сотрудника">

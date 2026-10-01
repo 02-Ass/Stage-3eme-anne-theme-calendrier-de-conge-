@@ -103,7 +103,7 @@ export default function VacationTable({ employeeId, employeeName, vacations, can
 
   const columns: ColumnsType<Row> = [
     {
-      title: 'Начало',
+      title: 'startDate',
       key: 'startDate',
       width: 126,
       render: (_, row) =>
@@ -119,7 +119,7 @@ export default function VacationTable({ employeeId, employeeName, vacations, can
         ),
     },
     {
-      title: 'Окончание',
+      title: 'endDate',
       key: 'endDate',
       width: 126,
       render: (_, row) =>
@@ -135,7 +135,7 @@ export default function VacationTable({ employeeId, employeeName, vacations, can
         ),
     },
     {
-      title: 'Дней',
+      title: 'days',
       key: 'days',
       width: 76,
       render: (_, row) =>
@@ -169,10 +169,10 @@ export default function VacationTable({ employeeId, employeeName, vacations, can
   return (
     <>
       <div className="panel-header">
-        <h2>Отпуска — {employeeName}</h2>
+        <h2>Vacation — {employeeName}</h2>
         {canEdit && (
           <Button size="small" icon={<PlusOutlined />} onClick={handleAddRow}>
-            Добавить
+            Add
           </Button>
         )}
       </div>

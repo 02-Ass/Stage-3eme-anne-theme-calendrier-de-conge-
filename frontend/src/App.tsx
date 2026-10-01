@@ -150,9 +150,9 @@ export default function App() {
   if (!auth.isAuthenticated) {
     return (
       <div className="login-screen">
-        <Typography.Title level={3}>Планирование отпусков</Typography.Title>
+        <Typography.Title level={3}>Vacation planning</Typography.Title>
         <Button type="primary" onClick={() => void auth.signinRedirect()}>
-          Войти через Keycloak
+          Login by Keycloak
         </Button>
       </div>
     );
@@ -168,7 +168,7 @@ export default function App() {
             size="small"
             onClick={() => void auth.signoutRedirect({ post_logout_redirect_uri: window.location.origin })}
           >
-            Выйти ({auth.user?.profile.preferred_username ?? auth.user?.profile.email ?? 'пользователь'})
+            Login ({auth.user?.profile.preferred_username ?? auth.user?.profile.email ?? 'пользователь'})
           </Button>
         </div>
       </header>
